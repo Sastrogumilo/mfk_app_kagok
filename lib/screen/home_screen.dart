@@ -12,7 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Home Screen'),
+          // title: const Text('Home Screen'),
         ),
         body: const SingleChildScrollView(
           child: Center(
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Home Screen',
+                  'Ini Home Screen',
                 ),
               ],
             ),
