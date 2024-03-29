@@ -39,6 +39,7 @@ dependencies:
   flutter_hooks: ^0.20.5
   stacked: ^3.4.2
   dio: ^5.4.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

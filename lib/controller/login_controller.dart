@@ -23,6 +23,7 @@ class LoginController {
       prefs.setString("puskesmas", data.response.puskesmas);
       prefs.setString("id", data.response.id.toString());
       prefs.setString("isAdmin", data.response.isAdmin.toString());
+      prefs.setString("nama", data.response.nama.toString());
       prefs.setStringList("menu", data.response.menu);
 
       //redirect to home
