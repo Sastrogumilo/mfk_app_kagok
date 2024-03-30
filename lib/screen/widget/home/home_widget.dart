@@ -95,9 +95,9 @@ class _ProfilePage1State extends State<ProfilePage1> {
                                 right: (MediaQuery.of(context).size.width / 2) *
                                     0.1,
                                 top: 50,
-                                child: Text(
-                                  "Selamat Datang, $namaUser",
-                                  style: const TextStyle(
+                                child: const Text(
+                                  "Pagi Yang Cerah\nUntuk Jiwa Yang Sepi",
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 25,
                                   ),
@@ -150,7 +150,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
             child: Column(
               children: [
                 Text(
-                  "Richie Lorie",
+                  namaUser,
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge
