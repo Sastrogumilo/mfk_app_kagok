@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kagok_app/screen/widget/home/home_widget.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:kagok_app/controller/login_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -74,18 +76,15 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void showModalLogout(BuildContext context) {
-  showDialog<void>(
+  AwesomeDialog(
     context: context,
-    builder: (BuildContext context) => AlertDialog(
-      content: const Text('Yakin Ingin Logout?'),
-      actions: <TextButton>[
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Close'),
-        )
-      ],
-    ),
-  );
+    dialogType: DialogType.question,
+    animType: AnimType.rightSlide,
+    title: 'Yakin Ingin Logout?',
+    desc: 'Anda akan di alihkan ke halaman login',
+    btnCancelOnPress: () {},
+    btnOkOnPress: () {
+      LoginController().logout(context);
+    },
+  ).show();
 }

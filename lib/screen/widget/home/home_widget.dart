@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 //import sharedprefrences
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:kagok_app/screen/widget/home/home_menu_widget.dart';
+
 class ProfilePage1 extends StatefulWidget {
   const ProfilePage1({super.key});
 
@@ -77,7 +79,10 @@ class _ProfilePage1State extends State<ProfilePage1> {
                       gradient: LinearGradient(
                         begin: Alignment.bottomCenter,
                         end: Alignment.topCenter,
-                        colors: [Color(0xff0043ba), Color(0xff006df1)],
+                        colors: [
+                          Color.fromARGB(255, 8, 183, 113),
+                          Color.fromARGB(255, 3, 240, 62)
+                        ],
                       ),
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30),
@@ -88,7 +93,7 @@ class _ProfilePage1State extends State<ProfilePage1> {
                   // Conditionally show the image with fade-in animation
                   SizedBox(
                     child: Visibility(
-                        visible: _showImage,
+                        visible: _isTopPortionExpanded,
                         child: Stack(
                           children: [
                             Positioned(
@@ -157,26 +162,17 @@ class _ProfilePage1State extends State<ProfilePage1> {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FloatingActionButton.extended(
-                      onPressed: () {},
-                      heroTag: 'follow',
-                      elevation: 0,
-                      label: const Text("Follow"),
-                      icon: const Icon(Icons.person_add_alt_1),
-                    ),
-                    const SizedBox(width: 16.0),
-                    FloatingActionButton.extended(
-                      onPressed: () {},
-                      heroTag: 'message',
-                      elevation: 0,
-                      backgroundColor: Colors.red,
-                      label: const Text("Message"),
-                      icon: const Icon(Icons.message_rounded),
-                    ),
-                  ],
+                FutureBuilder<Widget>(
+                  future: homeMenu(context),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return snapshot.data ?? Container();
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 const _ProfileInfoRow()

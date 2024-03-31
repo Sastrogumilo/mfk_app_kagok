@@ -34,4 +34,19 @@ class LoginController {
 
     return true;
   }
+
+  Future<void> logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("token");
+    prefs.remove("username");
+    prefs.remove("puskesmas");
+    prefs.remove("id");
+    prefs.remove("isAdmin");
+    prefs.remove("nama");
+    prefs.remove("menu");
+
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, "/login");
+    }
+  }
 }

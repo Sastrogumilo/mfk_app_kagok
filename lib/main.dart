@@ -20,7 +20,7 @@ void main() {
       '/home': (context) => const HomeScreen(),
       '/ipal': (context) => const IpalScreen(),
       '/apar': (context) => const AparScreen(),
-      '/user_mgmt': (context) => const UserMgmtScreen(),
+      '/user_management': (context) => const UserMgmtScreen(),
       '/gas_medik': (context) => const GasMedikScreen(),
     },
   ));
