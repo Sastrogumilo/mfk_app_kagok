@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kagok_app/model/apar/datatable_model.dart';
 import 'package:kagok_app/service/api_service.dart';
+import 'package:kagok_app/screen/apar/apar_form_screen.dart';
 
 class AparController {
   Future getAparDataTable(BuildContext context, DateTime startDate,
@@ -28,6 +29,24 @@ class AparController {
       },
     );
   }
+
+  bool process(
+      BuildContext context,
+      String noApar,
+      String lokasi,
+      String jenis,
+      String tglKedaluwarsa,
+      String tglInput,
+      String kapasitas,
+      String selang,
+      String pin,
+      String isiTabung,
+      String handleApar,
+      String tekananGas,
+      String corongBawah,
+      String kebersihan) {
+    return true;
+  }
 }
 
 class DataTile extends StatelessWidget {
@@ -50,7 +69,12 @@ class DataTile extends StatelessWidget {
             switch (element) {
               case 'edit':
                 arrActionRow.add(FloatingActionButton.extended(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const AparFormScreen(screenType: 'Edit');
+                    }));
+                  },
                   heroTag: 'Edit',
                   elevation: 0,
                   label: const Text("Edit"),

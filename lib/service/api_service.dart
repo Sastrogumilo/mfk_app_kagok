@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:kagok_app/controller/login_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kagok_app/app_config.dart';
 //import auth_response.dart
@@ -60,14 +61,17 @@ class APIService {
     } on DioException catch (e) {
       // print(e);
       var responseData = e.response?.data;
-      // print(responseData);
+      var responseCode = e.response?.statusCode;
+
+      Map<String, dynamic> hasilResponse = {};
 
       if (responseData is String) {
+        // print('1');
         RegExp regex = RegExp(r'<!--\s*(.*?)\s*#0');
         Match? match = regex.firstMatch(responseData);
 
-        responseData = {
-          'response': [],
+        hasilResponse = {
+          'response': {"message": responseData},
           'metadata': {
             'message': match?.group(1)?.contains('Symfony') ?? false
                 ? match?.group(1)
@@ -75,11 +79,23 @@ class APIService {
             'status': e.response?.statusCode ?? 500
           }
         };
-
-        // print(responseData);
+      } else if (responseData['response'] is String) {
+        // print('2');
+        if (responseData['response'] is String) {
+          hasilResponse = {
+            'response': {"message": responseData['response']},
+            'metadata': {
+              'message': responseData['response'],
+              'status': responseCode ?? 500
+            }
+          };
+        }
+      } else {
+        // print('3');
+        hasilResponse = responseData;
       }
 
-      final authResponse = AuthResponse.fromJson(responseData, model);
+      final authResponse = AuthResponse.fromJson(hasilResponse, model);
       final errorMessage = authResponse.metadata.message;
 
       if (context.mounted) {
@@ -90,6 +106,17 @@ class APIService {
             message: errorMessage);
       }
 
+      switch (responseCode) {
+        case 410:
+          //back to login
+          if (context.mounted) {
+            LoginController().logout(context);
+            // print("logout");
+          }
+          break;
+        default:
+          return authResponse;
+      }
       return authResponse;
     }
   }

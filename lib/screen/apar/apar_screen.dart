@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kagok_app/controller/apar_controller.dart';
 import 'package:kagok_app/service/date_picker.dart';
+import 'package:kagok_app/screen/apar/apar_form_screen.dart';
 
 class AparScreen extends StatefulWidget {
   const AparScreen({super.key});
@@ -42,7 +43,11 @@ class _AparScreenState extends State<AparScreen> {
             children: [
               const SizedBox(width: 30), // Adjust the width as needed
               FloatingActionButton.extended(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const AparFormScreen(screenType: 'Tambah');
+                  }));
+                },
                 heroTag: 'Tambah',
                 elevation: 0,
                 label: const Text("Tambah"),
