@@ -6,6 +6,7 @@ Future<Widget> homeMenu(context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   List<String> userMenu = prefs.getStringList('menu') ?? [];
+  // print(prefs.getString('token'));
 
   if (userMenu.isEmpty) {
     return const Center(
@@ -18,28 +19,28 @@ Future<Widget> homeMenu(context) async {
       "herotag": "",
       "elevation": 0.0,
       "label": "User Management",
-      "icon": const Icon(Icons.person_add_alt_1),
+      "icon": Icons.person_add_alt_1,
     },
     {
       "route": "/apar",
       "herotag": "",
       "elevation": 0.0,
       "label": "APAR",
-      "icon": const Icon(Icons.person_add_alt_1),
+      "icon": Icons.fire_extinguisher,
     },
     {
       "route": "/ipal",
       "herotag": "",
       "elevation": 0.0,
       "label": "IPAL",
-      "icon": const Icon(Icons.person_add_alt_1),
+      "icon": Icons.water_damage_rounded,
     },
     {
       "route": "/gas_medik",
       "herotag": "",
       "elevation": 0.0,
       "label": "Gas Medik",
-      "icon": const Icon(Icons.person_add_alt_1),
+      "icon": Icons.gas_meter_rounded,
     },
   ];
 
@@ -66,7 +67,7 @@ Future<Widget> homeMenu(context) async {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(menu['icon'].icon),
+                Icon(menu['icon']),
                 const SizedBox(height: 4), // Add spacing between icon and text
                 Expanded(
                     // Wrap the Text widget with Expanded

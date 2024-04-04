@@ -31,21 +31,26 @@ class APIService {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token') ?? "1234";
       // String? token = "1234"; //test purpose only
+      // print(token);
       final response = await _dio.request(
         cleanUrl,
         data: requestdata,
         options: Options(headers: {'token': token}, method: method),
       );
 
+      // print(response.data);
+
       if (response.statusCode == 200) {
         final hasil = AuthResponse.fromJson(response.data, model);
         //snackbar for success
         if (context.mounted && endpoint != '/') {
-          await showSnackBar(
-              context: context,
-              message: hasil.metadata.message,
-              color: Colors.green,
-              icon: Icons.check);
+          if (showNotification == true) {
+            await showSnackBar(
+                context: context,
+                message: hasil.metadata.message,
+                color: Colors.green,
+                icon: Icons.check);
+          }
         }
 
         return hasil;
@@ -55,6 +60,7 @@ class APIService {
     } on DioException catch (e) {
       // print(e);
       var responseData = e.response?.data;
+      // print(responseData);
 
       if (responseData is String) {
         RegExp regex = RegExp(r'<!--\s*(.*?)\s*#0');
