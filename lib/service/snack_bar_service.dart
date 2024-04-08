@@ -27,6 +27,7 @@ Future<void> showSnackBar({
           ),
           elevation: 1000,
           behavior: SnackBarBehavior.floating,
+          showCloseIcon: true,
         ),
       )
       .closed

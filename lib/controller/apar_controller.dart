@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kagok_app/model/apar/datatable_model.dart';
+import 'package:kagok_app/model/common_model.dart';
 import 'package:kagok_app/service/api_service.dart';
 import 'package:kagok_app/screen/apar/apar_form_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class AparController {
   Future getAparDataTable(BuildContext context, DateTime startDate,
@@ -30,8 +33,9 @@ class AparController {
     );
   }
 
-  bool process(
+  Future process(
       BuildContext context,
+      String idIndex,
       String noApar,
       String lokasi,
       String jenis,
@@ -44,8 +48,108 @@ class AparController {
       String handleApar,
       String tekananGas,
       String corongBawah,
-      String kebersihan) {
-    return true;
+      String kebersihan) async {
+    List<String> requiredField = [
+      'no_apar',
+      'lokasi',
+      'jenis_apar',
+      'tgl_input',
+      'selang',
+      'pin',
+      'isi_tabung',
+      'handle_apar',
+      'tekanan_gas',
+      'corong_bawah',
+      'kebersihan'
+    ];
+
+    final requestData = {
+      "id_index_apar": idIndex,
+      "no_apar": noApar,
+      "lokasi": lokasi,
+      "jenis_apar": jenis,
+      "tgl_kedaluwarsa": tglKedaluwarsa,
+      "tgl_input": tglInput,
+      "kapasitas": kapasitas,
+      "selang": selang,
+      "pin": pin,
+      "isi_tabung": isiTabung,
+      "handle_apar": handleApar,
+      "tekanan_gas": tekananGas,
+      "corong_bawah": corongBawah,
+      "kebersihan": kebersihan
+    };
+
+    //check if required data is empty based on requiredField
+    for (var element in requiredField) {
+      if (requestData[element] == null ||
+          requestData[element] == "" ||
+          requestData[element] == "null") {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Field $element is required"),
+              backgroundColor: Colors.red,
+              showCloseIcon: true,
+            ),
+          );
+        }
+        return null;
+      }
+    }
+
+    // change tglInput format from 01 June 2024 to d/m/Y
+    DateTime tglInputDate = DateFormat("d MMMM y").parse(tglInput);
+    tglInput = DateFormat("d/M/y").format(tglInputDate);
+
+    if (tglKedaluwarsa != "") {
+      // change tglKedaluwarsa format from 01 June 2024 to Y-m-d
+      DateTime tglKedaluwarsaDate =
+          DateFormat("d MMMM y").parse(tglKedaluwarsa);
+      tglKedaluwarsa = DateFormat("d/M/y").format(tglKedaluwarsaDate);
+    }
+
+    //upddate tgl_input and tgl_kedaluwarsa
+    requestData['tgl_input'] = tglInput;
+    requestData['tgl_kedaluwarsa'] = tglKedaluwarsa;
+
+    final data = await APIService().apiProvider(
+        context: context,
+        method: "POST",
+        endpoint: "/apar/process",
+        requestdata: requestData,
+        model: (json) => CommonModel.fromJson(json),
+        showNotification: true);
+
+    if (data?.metadata.status == 200) {
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/apar');
+        // Navigator.pop(context, true);
+      }
+    }
+
+    return data;
+  }
+
+  Future hapus(BuildContext context, String idIndex) async {
+    final requestData = {"id": idIndex};
+
+    final data = await APIService().apiProvider(
+        context: context,
+        method: "POST",
+        endpoint: "/apar/delete",
+        requestdata: requestData,
+        model: (json) => CommonModel.fromJson(json),
+        showNotification: true);
+
+    if (data?.metadata.status == 200) {
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/apar');
+        // Navigator.pop(context, true);
+      }
+    }
+
+    return data;
   }
 }
 
@@ -62,6 +166,7 @@ class DataTile extends StatelessWidget {
     dataMap.forEach((key, value) {
       if (key == 'action') {
         List<dynamic> arrAction = value;
+        String id = data.id.toString();
         if (arrAction.isNotEmpty) {
           List<Widget> arrActionRow = [];
 
@@ -70,9 +175,25 @@ class DataTile extends StatelessWidget {
               case 'edit':
                 arrActionRow.add(FloatingActionButton.extended(
                   onPressed: () {
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) {
-                      return const AparFormScreen(screenType: 'Edit');
+                      return AparFormScreen(
+                        screenType: 'Edit',
+                        idIndex: id,
+                        noApar: data.noApar,
+                        lokasi: data.lokasi,
+                        jenis: data.jenisApar,
+                        tglKedaluwarsa: data.tglKedaluwarsa,
+                        tglInput: data.tglInput,
+                        kapasitas: data.kapasitas,
+                        selang: data.selang,
+                        pin: data.pin,
+                        isiTabung: data.isiTabung,
+                        handleApar: data.handleApar,
+                        tekananGas: data.tekananGas,
+                        corongBawah: data.corongBawah,
+                        kebersihan: data.kebersihan,
+                      );
                     }));
                   },
                   heroTag: 'Edit',
@@ -86,7 +207,9 @@ class DataTile extends StatelessWidget {
 
               case 'delete':
                 arrActionRow.add(FloatingActionButton.extended(
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalDelete(context, data.id);
+                  },
                   heroTag: 'Hapus',
                   elevation: 0,
                   label: const Text("Hapus"),
@@ -141,5 +264,20 @@ class DataTile extends StatelessWidget {
           '${data.tglInput} - ${data.insertBy} - ${data.lokasi} - ${data.noApar}'),
       children: arrTile,
     );
+  }
+
+  void showModalDelete(BuildContext context, int idIndexData) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.question,
+      animType: AnimType.rightSlide,
+      title: 'Yakin Menghapus Data Ini?',
+      desc: 'Data yang sudah dihapus tidak bisa dikembalikan',
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        //hapus data;
+        AparController().hapus(context, idIndexData.toString());
+      },
+    ).show();
   }
 }

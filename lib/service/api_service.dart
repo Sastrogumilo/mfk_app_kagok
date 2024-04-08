@@ -59,9 +59,10 @@ class APIService {
         throw Exception('Failed to load data');
       }
     } on DioException catch (e) {
-      // print(e);
       var responseData = e.response?.data;
       var responseCode = e.response?.statusCode;
+
+      // print(responseData);
 
       Map<String, dynamic> hasilResponse = {};
 
