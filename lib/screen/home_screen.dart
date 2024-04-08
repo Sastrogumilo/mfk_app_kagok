@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const ProfilePage1(),
     const Text(
-      'Index 1: Business',
+      'Index 1: Setting Users',
       style: optionStyle,
     ),
     const Text(

@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 enum Environment { development, production, developmentThethering }
 
 class AppConfig {
@@ -8,11 +10,11 @@ class AppConfig {
   static String get baseUrl {
     switch (currentEnvironment) {
       case Environment.production:
-        return 'https://production-url.com';
+        return dotenv.env['URL_PRODUCTION'].toString();
       case Environment.developmentThethering:
-        return "http://192.168.225.74:8000/api/";
+        return dotenv.env['URL_DEVELOPMENT_THETHERING'].toString();
       default:
-        return 'http://192.168.70.72:8000/api/';
+        return dotenv.env['URL_DEVELOPMENT'].toString();
     }
   }
 }

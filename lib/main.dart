@@ -9,8 +9,10 @@ import 'package:kagok_app/screen/apar/apar_screen.dart';
 import 'package:kagok_app/screen/user_mgmt_screen.dart';
 import 'package:kagok_app/screen/gas_medik_screen.dart';
 import 'package:kagok_app/screen/apar/apar_form_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   // runApp(const MyApp());
   runApp(MaterialApp(
     title: "OK",
