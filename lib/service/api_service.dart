@@ -59,6 +59,7 @@ class APIService {
         throw Exception('Failed to load data');
       }
     } on DioException catch (e) {
+      // print(e.response?.data);
       var responseData = e.response?.data;
       var responseCode = e.response?.statusCode;
 

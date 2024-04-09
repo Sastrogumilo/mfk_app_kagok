@@ -15,6 +15,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   // runApp(const MyApp());
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: "OK",
     initialRoute: '/',
     routes: {
